@@ -1,65 +1,137 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
 
 export default function Home() {
+  const [bill, setbill] = useState(0);
+  const [percentage, setPercentage] = useState(0);
+  const [result, setResult] = useState({
+    tipAmount: 0,
+    totalPerPerson: 0,
+    total: 0,
+  });
+  const [isSplitting, setIsSplitting] = useState(false);
+  const [numberOfPeople, setNumberOfPeople] = useState(1);
+  const [error, setError] = useState("");
+
+  const percentageButtonValues = [5, 10, 15, 20, 25, 30];
+
+  const calculateTip = () => {
+    if (!bill || bill <= 0) {
+      setError("Please enter bill amount");
+      return;
+    }
+
+    if (!percentage) {
+      setError("Please select tip percentage!");
+      return;
+    }
+
+    if (isSplitting && numberOfPeople <= 0) {
+      setError("Number of people must be at least 1");
+      return;
+    }
+
+    setError("");
+
+    const tipAmount = bill * (percentage / 100);
+    const total = bill + tipAmount;
+    const totalPerPerson = total / numberOfPeople;
+
+    setResult({ tipAmount, totalPerPerson, total });
+  };
+
+  const resetCalculator = () => {
+    setbill(0);
+    setPercentage(0);
+    setResult({
+      tipAmount: 0,
+      totalPerPerson: 0,
+      total: 0,
+    });
+    setIsSplitting(false);
+    setNumberOfPeople(1);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="website-container">
+      <h1 className="text-white font-bold text-2xl">MINI Tip Calculator</h1>
+      <div className="tip-calculator-container">
+        <div className="left-container">
+          <label htmlFor="">Bill Amount</label>
+          <input
+            type="number"
+            value={bill || ""}
+            onChange={(e) => setbill(Number(e.target.value))}
+          />
+          {error && <p className="error-tooltip">{error}</p>}
+
+          <label htmlFor="">Tip Percentage</label>
+          <div className="percentage-buttons">
+            {percentageButtonValues.map((value) => (
+              <button
+                className={`${value === percentage && "selected-button"}`}
+                key={value}
+                onClick={() => setPercentage(value)}
+              >
+                {value}%
+              </button>
+            ))}
+          </div>
+
+          <div>
+            <label className="splitting-checkbox">
+              <input
+                type="checkbox"
+                checked={isSplitting}
+                onChange={(e) => setIsSplitting(e.target.checked)}
+              />
+              Split the bill
+            </label>
+          </div>
+
+          {isSplitting && (
+            <div>
+              <label htmlFor="">Number of People</label>
+              <input
+                type="number"
+                min={1}
+                value={numberOfPeople || ""}
+                onChange={(e) => setNumberOfPeople(Number(e.target.value))}
+              />
+            </div>
+          )}
+
+          <button className="calculate-button" onClick={calculateTip}>
+            Calculate
+          </button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="right-container">
+          <div className="result-container">
+            <p>Tip</p>
+            <p className="result-value">${result.tipAmount.toFixed(2)}</p>
+          </div>
+
+          {isSplitting && (
+            <div className="result-container">
+              <p>Bill Per Person</p>
+              <p className="result-value">
+                $
+                {isFinite(result.totalPerPerson)
+                  ? result.totalPerPerson.toFixed(2)
+                  : "0.00"}
+              </p>
+            </div>
+          )}
+          <div className="result-container">
+            <p>Total Bill</p>
+            <p className="result-value">${result.total.toFixed(2)}</p>
+          </div>
+
+          <button className="reset-button" onClick={resetCalculator}>
+            Reset
+          </button>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

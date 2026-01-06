@@ -1,26 +1,131 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --pastel-blue: #abc3f8;
+  --dark-blue: #374785;
+  --pastel-purple: #cbaacb;
+  --dark-purple: #6c5ce7;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.website-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 50px;
+  background-color: var(--pastel-blue);
+}
+.tip-calculator-container {
+  display: flex;
+  flex-direction: row;
+  border-radius: 10px 0px 0px 10px;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+  width: 80%;
+  max-width: 750px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.left-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  width: 50%;
+  background-color: white;
+  border-radius: 10px 0px 0px 10px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.left-container input {
+  padding: 5px;
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.right-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  width: 50%;
+  background-color: var(--pastel-blue);
+  border-radius: 0px 10px 10px 0px;
+}
+.percentage-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.percentage-buttons button {
+  background-color: white;
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.percentage-buttons .selected-button {
+  background-color: var(--dark-blue);
+  color: white;
+  font-weight: bold;
+}
+
+.splitting-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.splitting-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.result-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+.result-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.calculate-button {
+  background-color: white;
+  color: var(--dark-blue);
+  border: 1px solid var(--dark-blue);
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.calculate-button:hover {
+  background-color: var(--dark-blue);
+  color: white;
+}
+
+.reset-button {
+  margin-top: auto;
+  background-color: white;
+  color: var(--dark-purple);
+  border: 1px solid var(--dark-purple);
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: var(--dark-purple);
+  color: white;
+}
+
+.error-tooltip {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-bottom: 8px;
 }
